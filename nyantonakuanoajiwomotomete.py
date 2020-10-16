@@ -690,11 +690,14 @@ def turn(bg,clock):
             boss_status["HP"] -= damage
                 
         if 10 < tmr < 15:
-            bg.blit(damage_txt,[50,100])
-            bg.blit(img_damage_txt,[50,150])
+            bg.blit(damage_txt,[50,150])
+            bg.blit(img_damage_txt,[130,150])
             if tmr%2 == 0:
                 bg.blit(img_no_mouse,[0,0])
-        if tmr == 15:
+        if 15 <= tmr < 20:
+            bg.blit(damage_txt,[50,150])
+            bg.blit(img_damage_txt,[130,150])
+        if tmr == 20:
             if boss_status["HP"] <= 0:
                 index = 12
                 tmr = 0
@@ -722,10 +725,13 @@ def turn(bg,clock):
         
         if 10 < tmr < 15:
             bg.blit(damage_txt,[50,100])
-            bg.blit(img_damage_txt,[50,150])
+            bg.blit(img_damage_txt,[130,150])
             if tmr%2 == 0:
                 bg.blit(img_no_mouse,[0,0])
-        if tmr == 15:
+        if 15 <= tmr < 20:
+            bg.blit(damage_txt,[50,150])
+            bg.blit(img_damage_txt,[130,150])
+        if tmr == 20:
             if boss_status["HP"] <= 0:
                 index = 12
                 tmr = 0
@@ -782,9 +788,12 @@ def turn(bg,clock):
             p_status["HP"] -= damage
             if p_status["HP"] < 0:
                 p_status["HP"] = 0
-        if tmr == 15:
-            bg.blit(damage_txt,[50,100])
-            bg.blit(img_damage_txt,[50,150])
+        
+        if 10 < tmr < 20:
+            bg.blit(damage_txt,[50,150])
+            bg.blit(img_damage_txt,[130,150])
+
+        if tmr == 20:
             if defence:
                 p_status["DEF"] = DEF
             index = 6
