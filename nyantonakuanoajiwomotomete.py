@@ -174,6 +174,9 @@ BOUGU_OK = ""
 buki = ""
 weppon = ""
 
+damage = 0
+damage_txt = ""
+
 cost_M = [0,2,1,5]
 a = 0
 
@@ -196,7 +199,7 @@ def turn(bg,clock):
         len_nokori,lenzoku,clock_time,back_ascii,word_size_width,word_size_height,\
         count,count_txt,a,cleck,gameover,p_status,question,dungeon,boss_pos_x,boss_pos_y,\
         cost,DUNGEON,tmr,boss_status,defence,lenzoku_ac,weppon,BUKI_OK,\
-        BOUGU_OK,buki,ATK,DEF,damage
+        BOUGU_OK,buki,ATK,DEF,damage,damage_txt
 
     key = pygame.key.get_pressed()
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -205,7 +208,8 @@ def turn(bg,clock):
     font_0 = pygame.font.SysFont(None,45)
     font_1 = pygame.font.SysFont(None,150)
     font_2 = pygame.font.SysFont(None,65)
-    font_3 = pygame.font.SysFont(None,200)
+    font_3 = pygame.font.SysFont(None,300)
+    font_4 = pygame.font.SysFont(None,100)
 
     #タイトル
     if index == 0:
@@ -238,10 +242,10 @@ def turn(bg,clock):
     if index == 1:
         bg.blit(img_typing,[0,0])
         bg.blit(neko,[0,360]) 
-        w = font.render("30",True,BLACK)
+        w = font_4.render("30",True,BLACK)
         bg.blit(w,[20,20])
-        ac_count_txt = font.render("Pt:"+str(ac_count),True,BLACK)
-        bg.blit(ac_count_txt,[1100,20])
+        ac_count_txt = font_4.render("Pt:"+str(ac_count),True,BLACK)
+        bg.blit(ac_count_txt,[1050,20])
 
         bg.blit(img_start_txt,[250,250])
 
@@ -257,12 +261,12 @@ def turn(bg,clock):
         time = pygame.time.get_ticks() - start_time
         time //= 1000
         time = 30 - time
-        time_txt = font.render(str(time),True,BLACK)
+        time_txt = font_4.render(str(time),True,BLACK)
         bg.blit(time_txt,[20,20])
 
         count += 1
         if count <= 40:
-            bg.blit(count_txt,[1175,70])
+            bg.blit(count_txt,[1150,80])
 
         if len_nokori == 0:
             nokori = copy.deepcopy(question)
@@ -283,8 +287,8 @@ def turn(bg,clock):
         word_size_width,word_size_height = pygame.font.Font.size(font,word)
         bg.blit(txt,[640-word_size_width,250])
         bg.blit(txt_end,[640-word_size_width,250])
-        ac_count_txt = font.render("Pt:"+str(ac_count),True,BLACK)
-        bg.blit(ac_count_txt,[1100,20])
+        ac_count_txt = font_4.render("Pt:"+str(ac_count),True,BLACK)
+        bg.blit(ac_count_txt,[1050,20])
             
         if now != len_word:
             now_word = word[now]
@@ -299,10 +303,10 @@ def turn(bg,clock):
                 neko = img_neko_egao
                 now += 1
                 lenzoku_ac += 1
-                ac_count += lenzoku_ac//5%6
+                ac_count += (lenzoku_ac//5)%6
                 ac_count += 1
                 back_ascii = now_ascii
-                count_txt = font.render("+"+str(1+(lenzoku_ac//5%6)) ,True,RED)
+                count_txt = font.render("+"+str(1+((lenzoku_ac//5)%6)) ,True,RED)
                 count = 0
             elif 1 in key and type_down:
                 type_down = False
@@ -369,7 +373,7 @@ def turn(bg,clock):
         put(bg,img_neko_magao,p_pos_x,p_pos_y)
         pygame.draw.rect(bg,PINK,[pos_x*M, pos_y*M, M, M],3)
     
-        ac_count_txt = font.render(str(ac_count),True,PINK)
+        ac_count_txt = font.render(str(ac_count),True,BLACK)
         bg.blit(ac_count_txt,[750,720-115])
 
         int_put(bg,p_status["HP"],1025,310,font)
@@ -392,6 +396,7 @@ def turn(bg,clock):
                 select = 3
             if 1000 < mouse_x and mouse_x < 1280 and 140 < mouse_y and mouse_y < 240:
                 select = -1
+
             if 1155 < mouse_x and mouse_x < 1265 and cleck:
                 if mouse_x < 1202:
                     if ac_count > 0:
@@ -401,26 +406,67 @@ def turn(bg,clock):
                 elif 1217 < mouse_x:
                     a = -1
                 if 316 < mouse_y and mouse_y < 362:
-                    p_status["HP"] += a
-                    ac_count -= a
+                    if a == 1:
+                        p_status["HP"] += a
+                        ac_count -= a
+                    elif a == -1:
+                        if p_status["HP"] > 0:
+                            p_status["HP"] += a
+                            ac_count -= a
                 if 384 < mouse_y and mouse_y < 430:
-                    p_status["MP"] += a
-                    ac_count -= a
+                    if a == 1:
+                        p_status["MP"] += a
+                        ac_count -= a
+                    elif a == -1:
+                        if p_status["MP"] > 0:
+                            p_status["MP"] += a
+                            ac_count -= a
                 if 450 < mouse_y and mouse_y < 496:
-                    p_status["ATK"] += a
-                    ac_count -= a
+                    if a == 1:
+                        p_status["ATK"] += a
+                        ac_count -= a
+                    elif a == -1:
+                        if p_status["ATK"] > 0:
+                            p_status["ATK"] += a
+                            ac_count -= a
                 if 514 < mouse_y and mouse_y < 560:
-                    p_status["DEF"] += a
-                    ac_count -= a
+                    if a == 1:
+                        p_status["DEF"] += a
+                        ac_count -= a
+                    elif a == -1:
+                        if p_status["DEF"] > 0:
+                            p_status["DEF"] += a
+                            ac_count -= a
                 if 580 < mouse_y and mouse_y < 625:
-                    p_status["DEX"] += a
-                    ac_count -= a
+                    if a == 1:
+                        if p_status["DEX"] < 100:
+                            p_status["DEX"] += a
+                            ac_count -= a
+                    elif a == -1:
+                        if p_status["DEX"] > 0:
+                            p_status["DEX"] += a
+                            ac_count -= a
                 if 644 < mouse_y and mouse_y < 690:
-                    p_status["LUK"] += a
-                    ac_count -= a
+                    if a == 1:
+                        if p_status["LUK"] < 100:
+                            p_status["LUK"] += a
+                            ac_count -= a
+                    elif a == -1:
+                        if p_status["LUK"] > 0:
+                            p_status["LUK"] += a
+                            ac_count -= a
                 cleck = False
         else:
             cleck = True
+        
+        if select == 2:
+            pygame.draw.rect(bg,PINK,[720, 0, 280, 140],3)
+        if select == 1:
+            pygame.draw.rect(bg,PINK,[1000, 0, 280, 140],3)
+        if select == 3:
+            pygame.draw.rect(bg,PINK,[720, 140, 280, 140],3)
+        if select == -1:
+            pygame.draw.rect(bg,PINK,[1000, 140, 280, 140],3)
 
         if mbtn1 == 1 and mouse_x < 24*30:
             if select == -1:
@@ -693,7 +739,7 @@ def turn(bg,clock):
         score = ac_count * 1000
         if gameover:
             score = 0
-        int_put(bg,score,700,300,font_3)
+        bg.blit(str(score),[850,300])
         tmr = 1
         index = 14
 
