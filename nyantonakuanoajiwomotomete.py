@@ -189,7 +189,7 @@ HP = p_status["HP"]
 DEF = p_status["DEF"]
 ATK = p_status["ATK"]
 
-WEPPON = {"Buki":{"Good":30,"Bad":-20},"Bougu":{"Good":30,"Bad":-20}}
+WEPPON = {"Buki":{"Good":70,"Bad":-20},"Bougu":{"Good":70,"Bad":-20}}
 BUKI_OK = ""
 BOUGU_OK = ""
 buki = ""
@@ -220,7 +220,7 @@ def turn(bg,clock):
         len_nokori,lenzoku,clock_time,back_ascii,word_size_width,word_size_height,\
         count,count_txt,a,cleck,gameover,p_status,question,dungeon,boss_pos_x,boss_pos_y,\
         cost,DUNGEON,tmr,boss_status,defence,lenzoku_ac,weppon,BUKI_OK,\
-        BOUGU_OK,buki,ATK,DEF,damage,damage_txt
+        BOUGU_OK,buki,ATK,DEF,damage,damage_txt,HP
 
     key = pygame.key.get_pressed()
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -734,7 +734,7 @@ def turn(bg,clock):
 
     #プレイヤーの回復
     if index == 9:
-        if tmr <= 5 or 13 <= tmr:
+        if tmr < 5 or 13 < tmr:
             bg.blit(img_boss_buttle,[0,0])
             int_put(bg,p_status["HP"],1280-955,510,font)
             int_put(bg,p_status["MP"],1280-955,610,font)
