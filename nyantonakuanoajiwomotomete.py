@@ -45,7 +45,13 @@ img_gameover_txt = pygame.image.load("./images/gameover.png")
 img_space_txt = pygame.image.load("./images/space.png")
 img_no_mouse = pygame.image.load("./images/no_mouse.jpg")
 img_dark = pygame.image.load("./images/dark.png")
-
+img_bad_txt = pygame.image.load("./images/bad.png")
+img_damage_txt = pygame.image.load("./images/damage.png")
+img_good_txt = pygame.image.load("./images/damage.png")
+img_kougeki_txt = pygame.image.load("./images/kougeki.png")
+img_mahou_txt = pygame.image.load("./images/mahou.png")
+img_kahuku_txt = pygame.image.load("./images/kaihuku.png")
+img_mouse_kougeki_txt = pygame.image.load("./images/mouse_kougeki.png")
 
 clock_time = 30
 
@@ -163,7 +169,7 @@ cleck = True
 gameover = False
 
 p_status = {"HP":100,"MP":0,"ATK":50,"DEF":50,"DEX":70,"LUK":30}
-boss_status = {"HP":400,"ATK":200,"DEF":100,"DEX":85}
+boss_status = {"HP":400,"ATK":200,"DEF":100}
 HP = p_status["HP"]
 DEF = p_status["DEF"]
 ATK = p_status["ATK"]
@@ -482,6 +488,8 @@ def turn(bg,clock):
                     ac_count -= cost_M[select]
         
         if key[pygame.K_RETURN] == 1:
+            ATK = p_status["ATK"]
+            DEF = p_status["DEF"]
             clock_time = 10
             index = 4.5
             tmr = 0
@@ -503,10 +511,14 @@ def turn(bg,clock):
             p_status["DEF"] = DEF
             p_status["DEF"] += WEPPON["Bougu"][buki]
             BOUGU_OK = buki
-        txt1 = font_0.render(BUKI_OK,True,PINK)
-        bg.blit(txt1,[925,720-150])
-        txt2 = font_0.render(BOUGU_OK,True,PINK)
-        bg.blit(txt2,[925,720-63])
+        if BUKI_OK == "Good":
+            bg.blit(img_good_txt,[925,720-150])
+        elif BUKI_OK == "Bad":
+            bg.blit(img_bad_txt,[925,720-150])
+        if BOUGU_OK == "Good":
+            bg.blit(img_good_txt,[925,720-63])
+        elif BOUGU_OK == "Bad":
+            bg.blit(img_bad_txt,[925,720-63])        
 
         for y in range(dungeon_H):
             for x in range(dungeon_W):
@@ -604,6 +616,7 @@ def turn(bg,clock):
         int_put(bg,p_status["MP"],1280-955,610,font)
         
         if p_status["HP"] <= 0:
+            p_status["HP"] = 0
             index = 13
             gameover = True
             tmr = 0
@@ -644,23 +657,26 @@ def turn(bg,clock):
         int_put(bg,p_status["HP"],1280-955,510,font)
         int_put(bg,p_status["MP"],1280-955,610,font)
         if 0 <= tmr <= 5:
-            txt = font.render("Player Attack",True,BLUE)
-            bg.blit(txt,[50,50])
+            bg.blit(img_kougeki_txt,[50,50])
         if 5 < tmr < 10:
             bg.blit(img_attack,[1000-(tmr-3)*120,-300+(tmr-3)*120])
         if tmr == 10:
             d = random.randint(0,100)
-            if d <= p_status["DEX"]:
-                damage = p_status["ATK"]-boss_status["DEF"]
-                if damage < 0 or d > p_status["DEX"]:
-                    damage = 0
-            damage_txt = font.render(str(damage)+"damage!",True,WHITE)
+            damage = p_status["ATK"]-boss_status["DEF"]
+            if damage < 0 or d > p_status["DEX"]:
+                damage = 0
+            damage_txt = font.render(str(damage),True,WHITE)
+            boss_status["HP"] -= damage
                 
         if 10 < tmr < 15:
             bg.blit(damage_txt,[50,100])
+            bg.blit(img_damage_txt,[50,150])
             if tmr%2 == 0:
                 bg.blit(img_no_mouse,[0,0])
         if tmr == 15:
+            if boss_status["HP"] <= 0:
+                index = 12
+                tmr = 0
             tmr = 0
             index = 11
 
@@ -670,14 +686,27 @@ def turn(bg,clock):
         int_put(bg,p_status["HP"],1280-955,510,font)
         int_put(bg,p_status["MP"],1280-955,610,font)
         if 0 <= tmr <= 5:
-            txt = font.render("Player Magic",True,BLUE)
-            bg.blit(txt,[50,50])
+            bg.blit(img_mahou_txt,[50,50])
         if 5 < tmr < 10:
             put(bg,img_magic,0,0,tmr*30,600-tmr*15,250-tmr*15)
         if tmr == 10:
-            boss_status["HP"] -= (p_status["ATK"]*1.3-boss_status["DEF"])
+            d = random.randint(0,100)
+            damage = p_status["ATK"]*1.3-boss_status["DEF"]
+            if damage < 0 or d > p_status["DEX"]:
+                damage = 0
+            damage_txt = font.render(str(damage),True,WHITE)
             p_status["MP"] -= 10
+            boss_status["HP"] -= damage
+        
+        if 10 < tmr < 15:
+            bg.blit(damage_txt,[50,100])
+            bg.blit(img_damage_txt,[50,150])
+            if tmr%2 == 0:
+                bg.blit(img_no_mouse,[0,0])
         if tmr == 15:
+            if boss_status["HP"] <= 0:
+                index = 12
+                tmr = 0
             tmr = 0
             index = 11
 
@@ -688,8 +717,7 @@ def turn(bg,clock):
             int_put(bg,p_status["HP"],1280-955,510,font)
             int_put(bg,p_status["MP"],1280-955,610,font)
         if 0 <= tmr <= 5:
-            txt = font.render("Player Heal",True,BLUE)
-            bg.blit(txt,[50,50])
+            bg.blit(img_kahuku_txt,[50,50])
         if 5 < tmr < 13:
             put(bg,img_heal,0,0,1280)
         if tmr == 13:
@@ -719,15 +747,20 @@ def turn(bg,clock):
         int_put(bg,p_status["HP"],1280-955,510,font)
         int_put(bg,p_status["MP"],1280-955,610,font)
         if 0 <= tmr <= 5:
-            txt = font.render("Enemy Turn",True,BLUE)
-            bg.blit(txt,[50,50])
+            bg.blit(img_mouse_kougeki_txt,[50,50])
         if 5 < tmr < 10:
             bg.blit(img_boss_buttle,[tmr%2*10,tmr%2*10])
             int_put(bg,p_status["HP"],1280-955+tmr%2*10,510+tmr%2*10,font)
             int_put(bg,p_status["MP"],1280-955+tmr%2*10,610+tmr%2*10,font)
         if tmr == 10:
-            p_status["HP"] -= (boss_status["ATK"]-p_status["DEF"])
+            damage = boss_status["ATK"]-p_status["DEF"]
+            if damage < 0:
+                damage = 0
+            damage_txt = font.render(str(damage),True,WHITE)
+            p_status["HP"] -= damage
         if tmr == 15:
+            bg.blit(damage_txt,[50,100])
+            bg.blit(img_damage_txt,[50,150])
             if defence:
                 p_status["DEF"] = DEF
             index = 6
@@ -808,6 +841,75 @@ def turn(bg,clock):
             a = 0
 
             score = 0
+            BUKI_OK = ""
+            BOUGU_OK = ""
+            buki = ""
+            weppon = ""
+            HP = p_status["HP"]
+            DEF = p_status["DEF"]
+            ATK = p_status["ATK"]
+
+    if key[pygame.K_ESCAPE] == 1:
+            clock_time = 30
+            index = 0
+            nokori = []
+            len_nokori = 0
+            wordok = True
+            word = ""
+            now_ascii = 0
+            now = 0
+            ac_count = 0
+            neko = img_neko_magao
+            type_down = False
+            lenzoku = True
+            back_ascii = 0
+            word_size_width = 0
+            word_size_height = 0
+            count_txt = None
+            count = 41
+
+            cost = [[0 for _ in range(dungeon_W)]for _ in range(dungeon_H)]
+            dungeon = [[0 for _ in range(dungeon_W+5)]for _ in range(dungeon_H+5)]
+            for i in range(-2,3,1):
+                dungeon[1][dungeon_W//3+i] = 1
+                dungeon[4][dungeon_W//3+i] = 1
+                dungeon[dungeon_H-2][dungeon_W//2+i] = 1
+                dungeon[dungeon_H-5][dungeon_W//2+i] = 1
+                for j in range(2,4):
+                    if i == -2 or i == 2:
+                        dungeon[j][dungeon_W//3+i] = 1
+                    else:
+                        dungeon[j][dungeon_W//3+i] = 2
+                for j in range(dungeon_H-4,dungeon_H-2,1):
+                    if i == -2 or i == 2:
+                        dungeon[j][dungeon_W//2+i] = 1
+                    else:
+                        dungeon[j][dungeon_W//2+i] = 2
+
+            DUNGEON = copy.deepcopy(dungeon)
+
+            p_pos_x = dungeon_W//2 
+            p_pos_y = dungeon_H-3
+            boss_pos_x = dungeon_W//3
+            boss_pos_y = 2
+            pos_x = 0
+            pos_y = 0
+            select = 0
+            cleck = True
+            gameover = False
+
+            p_status = {"HP":100,"MP":0,"ATK":50,"DEF":50,"DEX":70,"LUK":40}
+            boss_status = {"HP":400,"ATK":100,"DEF":60,"DEX":85}
+            a = 0
+
+            score = 0
+            BUKI_OK = ""
+            BOUGU_OK = ""
+            buki = ""
+            weppon = ""
+            HP = p_status["HP"]
+            DEF = p_status["DEF"]
+            ATK = p_status["ATK"]
 
     tmr += 1
     pygame.display.update()
