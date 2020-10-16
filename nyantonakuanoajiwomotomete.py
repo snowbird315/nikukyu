@@ -47,7 +47,7 @@ img_no_mouse = pygame.image.load("./images/no_mouse.jpg")
 img_dark = pygame.image.load("./images/dark.png")
 img_bad_txt = pygame.image.load("./images/bad.png")
 img_damage_txt = pygame.image.load("./images/damage.png")
-img_good_txt = pygame.image.load("./images/damage.png")
+img_good_txt = pygame.image.load("./images/good.png")
 img_kougeki_txt = pygame.image.load("./images/kougeki.png")
 img_mahou_txt = pygame.image.load("./images/mahou.png")
 img_kahuku_txt = pygame.image.load("./images/kaihuku.png")
@@ -112,7 +112,22 @@ question =[
     "someone",
     "passenger",
     "allow",
-    "appear"
+    "appear",
+    "banana",
+    "annual",
+    "refund",
+    "receipt",
+    "concern",
+    "way",
+    "prepare",
+    "early",
+    "renovation",
+    "special",
+    "participant",
+    "fine",
+    "medical",
+    "return",
+    "drumming"
 ]
 len_question = len(question)
 nokori = []
@@ -482,10 +497,15 @@ def turn(bg,clock):
 
             elif dungeon[pos_y][pos_x] != select and ac_count >= cost_M[select]:
                 if select != 3 or dungeon[pos_y][pos_x] == 2:
-                    dungeon[pos_y][pos_x] = select
-                    ac_count += cost[pos_y][pos_x]
-                    cost[pos_y][pos_x] = cost_M[select]
-                    ac_count -= cost_M[select]
+                    if select == 3:
+                        dungeon[pos_y][pos_x] = select
+                        cost[pos_y][pos_x] += cost_M[select]
+                        ac_count -= cost_M[select]
+                    else:
+                        dungeon[pos_y][pos_x] = select
+                        ac_count += cost[pos_y][pos_x]
+                        cost[pos_y][pos_x] = cost_M[select]
+                        ac_count -= cost_M[select]
         
         if key[pygame.K_RETURN] == 1:
             ATK = p_status["ATK"]
@@ -579,6 +599,7 @@ def turn(bg,clock):
             tmr = 0
             ATK = p_status["HP"]
             DEF = p_status["DEF"]
+            HP = p_status["HP"]
         if dungeon[p_pos_y][p_pos_x] == 3:
             dungeon[p_pos_y][p_pos_x] = 2
             d = random.randint(0,100)
@@ -677,8 +698,9 @@ def turn(bg,clock):
             if boss_status["HP"] <= 0:
                 index = 12
                 tmr = 0
-            tmr = 0
-            index = 11
+            else:
+                tmr = 0
+                index = 11
 
     #プレイヤーのまほう
     if index == 8:
@@ -758,6 +780,8 @@ def turn(bg,clock):
                 damage = 0
             damage_txt = font.render(str(damage),True,WHITE)
             p_status["HP"] -= damage
+            if p_status["HP"] < 0:
+                p_status["HP"] = 0
         if tmr == 15:
             bg.blit(damage_txt,[50,100])
             bg.blit(img_damage_txt,[50,150])
@@ -772,7 +796,7 @@ def turn(bg,clock):
         score = ac_count * 1000
         if gameover:
             score = 0
-        bg.blit(str(score),[850,300])
+        int_put(bg,score,850,300,font_3)
         tmr = 1
         index = 14
 
