@@ -729,7 +729,7 @@ def turn(bg,clock):
             put(bg,img_magic,0,0,tmr*30,600-tmr*15,250-tmr*15)
         if tmr == 10:
             d = random.randint(0,100)
-            damage = p_status["ATK"]*1.3-boss_status["DEF"]//1
+            damage = p_status["ATK"]*1.3-boss_status["DEF"]
             if damage < 0 or d > p_status["DEX"]:
                 damage = 0
             damage_txt = font.render(str(damage),True,RED)
@@ -793,7 +793,7 @@ def turn(bg,clock):
             int_put(bg,p_status["HP"],1280-955+tmr%2*10,510+tmr%2*10,font)
             int_put(bg,p_status["MP"],1280-955+tmr%2*10,610+tmr%2*10,font)
         if tmr == 10:
-            damage = boss_status["ATK"]-p_status["DEF"]//1
+            damage = boss_status["ATK"]-p_status["DEF"]
             if damage < 0:
                 damage = 0
             damage_txt = font.render(str(damage),True,RED)
