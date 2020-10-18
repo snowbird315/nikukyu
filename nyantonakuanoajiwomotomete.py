@@ -51,6 +51,7 @@ img_good_txt = pygame.image.load("./images/good.png")
 img_kougeki_txt = pygame.image.load("./images/kougeki.png")
 img_mahou_txt = pygame.image.load("./images/mahou.png")
 img_kahuku_txt = pygame.image.load("./images/kaihuku.png")
+img_bougyo_txt = pygame.image.load("./images/bougyo.png")
 img_mouse_kougeki_txt = pygame.image.load("./images/mouse_kougeki.png")
 
 clock_time = 30
@@ -58,20 +59,6 @@ clock_time = 30
 #タイピングゲームに必要な変数、配列
 index = 0
 question =[
-    "game",
-    "codeforces",
-    "topcoder",
-    "rust",
-    "pypy",
-    "html",
-    "css",
-    "java",
-    "javascript",
-    "typing",
-    "cat",
-    "dog",
-    "gorilla",
-    "twitter",
     "company",
     "office",
     "meeting",
@@ -113,7 +100,6 @@ question =[
     "passenger",
     "allow",
     "appear",
-    "banana",
     "annual",
     "refund",
     "receipt",
@@ -127,7 +113,34 @@ question =[
     "fine",
     "medical",
     "return",
-    "drumming"
+    "catering",
+    "ensure",
+    "estimate",
+    "potential",
+    "remind",
+    "intend",
+    "delighted",
+    "cinplimentary",
+    "mayor",
+    "venue",
+    "fabric",
+    "patient",
+    "attach",
+    "conversation",
+    "anyway",
+    "paperwork",
+    "greet",
+    "realize",
+    "status",
+    "procedure",
+    "cause",
+    "save",
+    "negotiate",
+    "lobby",
+    "exchange",
+    "distance",
+    "admission",
+    "inquire"
 ]
 len_question = len(question)
 nokori = []
@@ -513,6 +526,7 @@ def turn(bg,clock):
             clock_time = 10
             index = 4.5
             tmr = 0
+            p_status["HP"] = HP
     
     if index == 4.5:
         if tmr < 30 and tmr % 2 == 0:
@@ -599,7 +613,6 @@ def turn(bg,clock):
             tmr = 0
             ATK = p_status["HP"]
             DEF = p_status["DEF"]
-            HP = p_status["HP"]
         if dungeon[p_pos_y][p_pos_x] == 3:
             dungeon[p_pos_y][p_pos_x] = 2
             d = random.randint(0,100)
@@ -686,7 +699,7 @@ def turn(bg,clock):
             damage = p_status["ATK"]-boss_status["DEF"]
             if damage < 0 or d > p_status["DEX"]:
                 damage = 0
-            damage_txt = font.render(str(damage),True,WHITE)
+            damage_txt = font.render(str(damage),True,RED)
             boss_status["HP"] -= damage
                 
         if 10 < tmr < 15:
@@ -696,7 +709,7 @@ def turn(bg,clock):
                 bg.blit(img_no_mouse,[0,0])
         if 15 <= tmr < 20:
             bg.blit(damage_txt,[50,150])
-            bg.blit(img_damage_txt,[130,150])
+            bg.blit(img_damage_txt,[150,150])
         if tmr == 20:
             if boss_status["HP"] <= 0:
                 index = 12
@@ -716,10 +729,10 @@ def turn(bg,clock):
             put(bg,img_magic,0,0,tmr*30,600-tmr*15,250-tmr*15)
         if tmr == 10:
             d = random.randint(0,100)
-            damage = p_status["ATK"]*1.3-boss_status["DEF"]
+            damage = p_status["ATK"]*1.3-boss_status["DEF"]//1
             if damage < 0 or d > p_status["DEX"]:
                 damage = 0
-            damage_txt = font.render(str(damage),True,WHITE)
+            damage_txt = font.render(str(damage),True,RED)
             p_status["MP"] -= 10
             boss_status["HP"] -= damage
         
@@ -761,8 +774,7 @@ def turn(bg,clock):
         int_put(bg,p_status["HP"],1280-955,510,font)
         int_put(bg,p_status["MP"],1280-955,610,font)
         if 0 <= tmr <= 5:
-            txt = font.render("Player Defense",True,BLUE)
-            bg.blit(txt,[50,50])
+            bg.blit(img_bougyo_txt,[50,50])
         if tmr == 10:
             p_status["DEF"] *= 1.5
             defence = True
@@ -781,17 +793,17 @@ def turn(bg,clock):
             int_put(bg,p_status["HP"],1280-955+tmr%2*10,510+tmr%2*10,font)
             int_put(bg,p_status["MP"],1280-955+tmr%2*10,610+tmr%2*10,font)
         if tmr == 10:
-            damage = boss_status["ATK"]-p_status["DEF"]
+            damage = boss_status["ATK"]-p_status["DEF"]//1
             if damage < 0:
                 damage = 0
-            damage_txt = font.render(str(damage),True,WHITE)
+            damage_txt = font.render(str(damage),True,RED)
             p_status["HP"] -= damage
             if p_status["HP"] < 0:
                 p_status["HP"] = 0
         
         if 10 < tmr < 20:
             bg.blit(damage_txt,[50,150])
-            bg.blit(img_damage_txt,[130,150])
+            bg.blit(img_damage_txt,[150,150])
 
         if tmr == 20:
             if defence:
@@ -805,7 +817,9 @@ def turn(bg,clock):
         score = ac_count * 1000
         if gameover:
             score = 0
-        int_put(bg,score,850,300,font_3)
+        txt = font_3.render(str(score),True,BLACK)
+        word_size_width,word_size_height = pygame.font.Font.size(font,str(score))
+        bg.blit(txt,[830-word_size_width,300])
         tmr = 1
         index = 14
 
